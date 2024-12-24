@@ -1,0 +1,5 @@
+p, user, /user, *
+p, client, /tenders, POST
+p, client, /tenders, GET
+p, client, /tenders, PUT
+p, client, /tenders, DELETE
