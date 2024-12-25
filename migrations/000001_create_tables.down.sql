@@ -1,0 +1,25 @@
+-- Drop Tables (Migration Down)
+DROP TABLE IF EXISTS notification;
+DROP TABLE IF EXISTS promotions;
+DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS recommendations;
+DROP TABLE IF EXISTS search_history;
+DROP TABLE IF EXISTS claims;
+DROP TABLE IF EXISTS bookmarks;
+DROP TABLE IF EXISTS reviews_attachment;
+DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS businesses_attachment;
+DROP TABLE IF EXISTS businesses;
+DROP TABLE IF EXISTS business_categories;
+DROP TABLE IF EXISTS sessions;
+DROP TABLE IF EXISTS users;
+
+-- Drop Enums (Migration Down)
+DROP TYPE IF EXISTS notification_type;
+DROP TYPE IF EXISTS claim_status;
+DROP TYPE IF EXISTS platform;
+DROP TYPE IF EXISTS attachment_type;
+DROP TYPE IF EXISTS user_status;
+DROP TYPE IF EXISTS gender;
+DROP TYPE IF EXISTS user_role;
+DROP TYPE IF EXISTS user_type;
