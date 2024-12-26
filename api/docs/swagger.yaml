@@ -1,0 +1,87 @@
+basePath: /
+definitions:
+  github_com_abdulazizax_yelp_internal_entity.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  github_com_abdulazizax_yelp_internal_entity.Info:
+    properties:
+      message:
+        type: string
+    type: object
+  github_com_abdulazizax_yelp_internal_entity_user.CreateUser:
+    properties:
+      email:
+        maxLength: 255
+        type: string
+      gender:
+        default: male
+        enum:
+        - male
+        - female
+        type: string
+      name:
+        maxLength: 100
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - gender
+    - name
+    - password
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API Endpoints for MiniTwitter
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: '# UdevsLab Homework3'
+  version: 1.03.67.83.145
+paths:
+  /sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user and return the created user's ID
+      parameters:
+      - description: user information
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity_user.CreateUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: message
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Info'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
+      summary: Create a new user
+      tags:
+      - users
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
