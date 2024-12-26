@@ -22,4 +22,26 @@ type (
 		Password string `json:"password" binding:"required"`
 		Gender   string `json:"gender" binding:"required,oneof=male female" default:"male"`
 	}
+
+	SignInUser struct {
+		Email    string `json:"email" binding:"required,email,max=255"`
+		Password string `json:"password" binding:"required"`
+	}
+
+	CreateSession struct {
+		UserID    string `json:"user_id" binding:"required,uuid"`
+		UserAgent string `json:"user_agent" binding:"required"`
+		Platform  string `json:"platform" binding:"required,oneof=web mobile admin_panel"`
+		IPAddress string `json:"ip_address" binding:"required"`
+	}
+
+	Session struct {
+		ID        string `json:"id" binding:"required,uuid"`
+		UserID    string `json:"user_id" binding:"required,uuid"`
+		UserAgent string `json:"user_agent" binding:"required"`
+		Platform  string `json:"platform" binding:"required,oneof=web mobile admin_panel"`
+		IPAddress string `json:"ip_address" binding:"required"`
+		CreatedAt string `json:"created_at" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
+		UpdatedAt string `json:"updated_at" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
+	}
 )

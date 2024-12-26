@@ -39,19 +39,28 @@ func NewUserHandler(usecase user_usecase.UserUsecase, log logger.Interface) User
 // @Router /sign-up [post]
 func (u *userHandler) SignUp(c *gin.Context) {
 	var user user_entity.CreateUser
+	// Binding the request body to user struct
 	if err := c.ShouldBindJSON(&user); err != nil {
 		u.log.Error("failed to bind JSON", "error", err)
 		c.JSON(http.StatusBadRequest, entity.Error{Message: "Invalid user data"})
 		return
 	}
 
+	// Calling usecase to create the user
 	err := u.usecase.CreateUser(c, &user)
 	if err != nil {
+		// Check if the error is related to user already existing
+		if err == entity.ErrUserAlreadyExists {
+			c.JSON(http.StatusConflict, entity.Error{Message: err.Error()})
+			return
+		}
+		// For other errors, return internal server error
 		u.log.Error("failed to create user", "error", err)
 		c.JSON(http.StatusInternalServerError, entity.Error{Message: "Failed to create user"})
 		return
 	}
 
+	// Successfully created user
 	u.log.Info("User created successfully")
 	c.JSON(http.StatusCreated, entity.Info{Message: "User created successfully"})
 }
