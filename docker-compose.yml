@@ -1,0 +1,55 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - yelp
+    env_file:
+      - .env
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    environment:
+      REDIS_USERNAME: ${REDIS_USERNAME}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - "6378:6379"
+    networks:
+      - yelp
+    env_file:
+      - .env
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yelp-app
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8080:8080"
+    networks:
+      - yelp
+    env_file:
+      - .env
+
+networks:
+  yelp:
+    name: yelp
+    external: true
+
+volumes:
+  postgres-data:
+  redis-data:

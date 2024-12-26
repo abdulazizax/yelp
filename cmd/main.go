@@ -14,5 +14,6 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Run application
 	log.Fatal(app.Run(cfg))
 }
