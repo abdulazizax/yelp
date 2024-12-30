@@ -1,5 +1,8 @@
 basePath: /
 definitions:
+  gin.H:
+    additionalProperties: {}
+    type: object
   github_com_abdulazizax_yelp_internal_entity.Error:
     properties:
       message:
@@ -9,6 +12,23 @@ definitions:
     properties:
       message:
         type: string
+    type: object
+  github_com_abdulazizax_yelp_internal_entity_user.CreateSession:
+    properties:
+      ip_address:
+        type: string
+      platform:
+        enum:
+        - web
+        - mobile
+        - admin_panel
+        type: string
+      user_agent:
+        type: string
+    required:
+    - ip_address
+    - platform
+    - user_agent
     type: object
   github_com_abdulazizax_yelp_internal_entity_user.CreateUser:
     properties:
@@ -32,6 +52,53 @@ definitions:
     - name
     - password
     type: object
+  github_com_abdulazizax_yelp_internal_entity_user.SendVerificationCodeRequest:
+    properties:
+      email:
+        maxLength: 255
+        type: string
+    required:
+    - email
+    type: object
+  github_com_abdulazizax_yelp_internal_entity_user.SendVerificationCodeResponse:
+    properties:
+      duration:
+        type: string
+      message:
+        type: string
+    type: object
+  github_com_abdulazizax_yelp_internal_entity_user.SignInRequest:
+    properties:
+      create_session:
+        $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity_user.CreateSession'
+      user:
+        $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity_user.SignInUser'
+    type: object
+  github_com_abdulazizax_yelp_internal_entity_user.SignInUser:
+    properties:
+      email:
+        maxLength: 255
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  github_com_abdulazizax_yelp_internal_entity_user.UpdateUserPassword:
+    properties:
+      email:
+        maxLength: 255
+        type: string
+      new_password:
+        type: string
+      verification_code:
+        type: string
+    required:
+    - email
+    - new_password
+    - verification_code
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -46,13 +113,87 @@ info:
   title: '# UdevsLab Homework3'
   version: 1.03.67.83.145
 paths:
+  /send-verification-code:
+    post:
+      consumes:
+      - application/json
+      description: Sends a verification code to the user's email for verification
+        purposes
+      parameters:
+      - description: Send Verification Code Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity_user.SendVerificationCodeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Verification code sent successfully
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity_user.SendVerificationCodeResponse'
+        "400":
+          description: Invalid user data
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
+        "500":
+          description: Failed to send verification code
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
+      summary: Send Verification Code
+      tags:
+      - auth
+  /sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user and returns a JWT token upon successful login
+      parameters:
+      - description: Sign In Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity_user.SignInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: JWT Token
+          schema:
+            $ref: '#/definitions/gin.H'
+        "400":
+          description: Invalid user data
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
+        "401":
+          description: Incorrect password
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
+      summary: User Sign In
+      tags:
+      - auth
   /sign-up:
     post:
       consumes:
       - application/json
-      description: Create a new user and return the created user's ID
+      description: Registers a new user with the provided details and returns a confirmation
+        message
       parameters:
-      - description: user information
+      - description: User registration details
         in: body
         name: user
         required: true
@@ -62,20 +203,50 @@ paths:
       - application/json
       responses:
         "201":
-          description: message
+          description: User successfully registered
           schema:
             $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Info'
         "400":
-          description: Bad Request
+          description: Invalid request payload
           schema:
             $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
             $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
-      summary: Create a new user
+      summary: Create a new user account
       tags:
-      - users
+      - auth
+  /update-password:
+    post:
+      consumes:
+      - application/json
+      description: Updates a user's password after validating the request
+      parameters:
+      - description: Update User Password Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity_user.UpdateUserPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password updated successfully
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Info'
+        "400":
+          description: Invalid user data
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
+        "500":
+          description: Failed to update user password
+          schema:
+            $ref: '#/definitions/github_com_abdulazizax_yelp_internal_entity.Error'
+      summary: Update User Password
+      tags:
+      - auth
 schemes:
 - http
 - https

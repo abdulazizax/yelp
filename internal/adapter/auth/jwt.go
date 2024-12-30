@@ -7,17 +7,17 @@ import (
 )
 
 type TokenClaims struct {
-	UserID   string `json:"user_id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Role     string `json:"role"`
+	UserID string `json:"user_id"`
+	Email  string `json:"email"`
+	Role   string `json:"role"`
+	Type   string `json:"type"`
 }
 
 type Claims struct {
-	UserID   string `json:"user_id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Role     string `json:"role"`
+	UserID string `json:"user_id"`
+	Email  string `json:"email"`
+	Role   string `json:"role"`
+	Type   string `json:"type"`
 	jwt.StandardClaims
 }
 
@@ -25,10 +25,10 @@ func GenerateAccessToken(jwtKey string, tokenClaims *TokenClaims) (string, error
 	expirationTime := time.Now().Add(24 * time.Hour)
 
 	claims := &Claims{
-		UserID:   tokenClaims.UserID,
-		Username: tokenClaims.Username,
-		Role:     tokenClaims.Role,
-		Email:    tokenClaims.Email,
+		UserID: tokenClaims.UserID,
+		Email:  tokenClaims.Email,
+		Role:   tokenClaims.Role,
+		Type:   tokenClaims.Type,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

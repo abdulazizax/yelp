@@ -21,15 +21,21 @@ func CheckPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
-// ValidatePassword checks if the password meets security requirements.
+// ValidatePassword checks if the password meets basic security requirements.
 func ValidatePassword(password string) error {
 	const minPasswordLength = 8
+	const maxPasswordLength = 128 // Gmail-style upper limit
 
+	// Check password length
 	if len(password) < minPasswordLength {
 		return errors.New("password must be at least 8 characters long")
 	}
+	if len(password) > maxPasswordLength {
+		return errors.New("password must not exceed 128 characters")
+	}
 
-	var hasUpper, hasLower, hasNumber, hasSpecial bool
+	// Check for the presence of different character types
+	var hasUpper, hasLower, hasNumber bool
 	for _, char := range password {
 		switch {
 		case unicode.IsUpper(char):
@@ -38,23 +44,19 @@ func ValidatePassword(password string) error {
 			hasLower = true
 		case unicode.IsDigit(char):
 			hasNumber = true
-		case unicode.IsPunct(char) || unicode.IsSymbol(char):
-			hasSpecial = true
 		}
 	}
 
-	if !hasUpper {
-		return errors.New("password must contain at least one uppercase letter")
-	}
+	// Minimal requirements:
+	// - At least one lowercase letter
+	// - At least one uppercase letter or one number
 	if !hasLower {
 		return errors.New("password must contain at least one lowercase letter")
 	}
-	if !hasNumber {
-		return errors.New("password must contain at least one number")
-	}
-	if !hasSpecial {
-		return errors.New("password must contain at least one special character")
+	if !hasUpper && !hasNumber {
+		return errors.New("password must contain at least one uppercase letter or one number")
 	}
 
+	// The password meets all criteria
 	return nil
 }

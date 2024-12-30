@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -12,6 +13,7 @@ type (
 		Postgres PostgresConfig
 		Redis    RedisConfig
 		JWT      JWTConfig
+		Email    EmailConfig
 		Logger   LoggerConfig
 	}
 
@@ -39,12 +41,24 @@ type (
 	}
 
 	LoggerConfig struct {
-		Level string // Log darajasi
+		Level string
+	}
+
+	EmailConfig struct {
+		SmtpHost string
+		SmtpPort int
+		SmtpUser string
+		SmtpPass string
 	}
 )
 
 func (c *Config) Load() error {
 	if err := godotenv.Load(); err != nil {
+		return err
+	}
+
+	smtpPort, err := strconv.Atoi(os.Getenv("SMTP_PORT"))
+	if err != nil {
 		return err
 	}
 
@@ -66,6 +80,12 @@ func (c *Config) Load() error {
 
 	// Logger
 	c.Logger.Level = os.Getenv("LOG_LEVEL")
+
+	// Email
+	c.Email.SmtpHost = os.Getenv("SMTP_HOST")
+	c.Email.SmtpPort = smtpPort
+	c.Email.SmtpUser = os.Getenv("SMTP_USER")
+	c.Email.SmtpPass = os.Getenv("SMTP_PASS")
 
 	return nil
 }

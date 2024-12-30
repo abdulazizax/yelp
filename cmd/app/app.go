@@ -14,6 +14,7 @@ import (
 	"github.com/abdulazizax/yelp/internal/usecase"
 
 	"github.com/abdulazizax/yelp/pkg/logger"
+	"github.com/abdulazizax/yelp/pkg/security"
 )
 
 func Run(cfg *config.Config) error {
@@ -36,11 +37,13 @@ func Run(cfg *config.Config) error {
 		return err
 	}
 
-	cache := cache.NewRedisCacheImpl(redis)
+	cache := cache.NewRedisCache(redis, log)
 
-	repo := repository.NewRepository(db, queryBuilder, log)
+	emailService := security.NewEmailService(cache, cfg)
 
-	usecase := usecase.NewUsecase(repo, cache, log)
+	repo := repository.NewRepository(db, queryBuilder, emailService, log)
+
+	usecase := usecase.NewUsecase(repo, cache, cfg, emailService, log)
 
 	// Initialize HTTP handler
 	handler := handler.NewHandlers(usecase, log)

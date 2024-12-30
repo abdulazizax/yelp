@@ -16,11 +16,38 @@ type (
 		UpdatedAt      string `json:"updated_at" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
 	}
 
+	SendVerificationCodeRequest struct {
+		Email string `json:"email" binding:"required,email,max=255"`
+	}
+
+	SendVerificationCodeResponse struct {
+		Message  string `json:"message"`
+		Duration string `json:"duration"`
+	}
+
+	UpdateUserPassword struct {
+		Email            string `json:"email" binding:"required,email,max=255"`
+		VerificationCode string `json:"verification_code" binding:"required"`
+		NewPassword      string `json:"new_password" binding:"required"`
+	}
+
+	UserInfo struct {
+		ID           string `json:"id" binding:"required,uuid"`
+		UserType     string `json:"user_type" binding:"required,oneof=user admin business_owner"`
+		UserRole     string `json:"user_role" binding:"required,oneof=user admin business_owner super_admin"`
+		PasswordHash string `json:"password_hash" binding:"required"`
+	}
+
 	CreateUser struct {
 		Name     string `json:"name" binding:"required,max=100"`
 		Email    string `json:"email" binding:"required,email,max=255"`
 		Password string `json:"password" binding:"required"`
 		Gender   string `json:"gender" binding:"required,oneof=male female" default:"male"`
+	}
+
+	SignInRequest struct {
+		User    SignInUser    `json:"user"`
+		Session CreateSession `json:"create_session"`
 	}
 
 	SignInUser struct {
@@ -29,7 +56,6 @@ type (
 	}
 
 	CreateSession struct {
-		UserID    string `json:"user_id" binding:"required,uuid"`
 		UserAgent string `json:"user_agent" binding:"required"`
 		Platform  string `json:"platform" binding:"required,oneof=web mobile admin_panel"`
 		IPAddress string `json:"ip_address" binding:"required"`

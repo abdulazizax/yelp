@@ -10,6 +10,7 @@ var (
 	ErrUserNotFound      = fmt.Errorf("user not found")
 	ErrIncorrectPassword = fmt.Errorf("incorrect password")
 	ErrInvalidPassword   = fmt.Errorf("invalid password")
+	ErrUserNotExists     = fmt.Errorf("user does not exist")
 )
 
 // Structs for API response

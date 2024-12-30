@@ -52,6 +52,9 @@ func Roter(handler handler.Handlers, config *config.Config) error {
 
 	// Handlers
 	router.POST("/sign-up", handler.UserHandler().SignUp)
+	router.POST("/sign-in", handler.UserHandler().SignIn)
+	router.POST("send-verification-code", handler.UserHandler().SendVerificationCode)
+	router.POST("/update-password", handler.UserHandler().UpdateUserPassword)
 
 	return router.Run(config.Server.Port)
 }

@@ -1,59 +1,55 @@
-// internal/adapter/redis/redis_cache_impl.go
+// internal/adapter/redis/redis_cache_.go
 package cache
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"log/slog"
 	"time"
 
-	"github.com/go-redis/redis/v8" // Redis uchun Go kutubxonasi
+	"github.com/abdulazizax/yelp/pkg/logger"
+	"github.com/go-redis/redis/v8"
 )
 
-type RedisCacheImpl struct {
-	client *redis.Client
+type redisCache struct {
+	redisDb *redis.Client
+	log     logger.Interface
 }
 
-// NewRedisCacheImpl - RedisCache interfeysini amalga oshiradigan structni yaratadi
-func NewRedisCacheImpl(client *redis.Client) *RedisCacheImpl {
-	return &RedisCacheImpl{
-		client: client,
+// NewRedisCache - RedisCache interfeysini amalga oshiradigan structni yaratadi
+func NewRedisCache(redisDb *redis.Client, log logger.Interface) RedisCache {
+	return &redisCache{
+		redisDb: redisDb,
+		log:     log,
 	}
 }
 
-// Set - Cachega ma'lumot qo'shish
-func (r *RedisCacheImpl) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error {
-	val, err := json.Marshal(value)
+func (r *redisCache) StoreEmailAndCode(ctx context.Context, email string, code int, duration time.Duration) error {
+	codeKey := "verification_code:" + email
+	err := r.redisDb.Set(ctx, codeKey, code, time.Minute*duration).Err()
 	if err != nil {
-		return fmt.Errorf("error marshaling value: %w", err)
-	}
-
-	err = r.client.Set(ctx, key, val, expiration).Err()
-	if err != nil {
-		return fmt.Errorf("error setting value in cache: %w", err)
+		r.log.Error("Error while storing verification code", slog.String("error", err.Error()))
+		return err
 	}
 	return nil
 }
 
-// Get - Cache'dan ma'lumot olish
-func (r *RedisCacheImpl) Get(ctx context.Context, key string, result interface{}) error {
-	val, err := r.client.Get(ctx, key).Result()
-	if err != nil {
-		return fmt.Errorf("error getting value from cache: %w", err)
+func (r *redisCache) GetCodeByEmail(ctx context.Context, email string) (int, error) {
+	codeKey := "verification_code:" + email
+	codeStr, err := r.redisDb.Get(ctx, codeKey).Result()
+	if err == redis.Nil {
+		return 0, nil
+	} else if err != nil {
+		r.log.Error("Error while getting verification code", slog.String("error", err.Error()))
+		return 0, err
 	}
 
-	err = json.Unmarshal([]byte(val), result)
+	var code int
+	_, err = fmt.Sscanf(codeStr, "%d", &code)
 	if err != nil {
-		return fmt.Errorf("error unmarshaling value from cache: %w", err)
+		r.log.Error("Error while parsing verification code", slog.String("error", err.Error()))
+		return 0, err
 	}
-	return nil
-}
 
-// Delete - Cache'dan ma'lumot o'chirish
-func (r *RedisCacheImpl) Delete(ctx context.Context, key string) error {
-	err := r.client.Del(ctx, key).Err()
-	if err != nil {
-		return fmt.Errorf("error deleting value from cache: %w", err)
-	}
-	return nil
+	return code, nil
 }

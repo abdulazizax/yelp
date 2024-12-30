@@ -8,7 +8,6 @@ import (
 
 // RedisCache - Redis caching uchun interfeys
 type RedisCache interface {
-	Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error
-	Get(ctx context.Context, key string, result interface{}) error
-	Delete(ctx context.Context, key string) error
+	StoreEmailAndCode(ctx context.Context, email string, code int, duration time.Duration) error
+	GetCodeByEmail(ctx context.Context, email string) (int, error)
 }
