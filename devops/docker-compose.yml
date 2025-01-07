@@ -1,0 +1,29 @@
+services:
+  yelpdb:
+    image: postgres:latest
+    container_name: yelpdb
+    environment:
+      POSTGRES_USER: yelpdb
+      POSTGRES_PASSWORD: yelpdb_secret
+      POSTGRES_DB: yelpdb
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - yelp
+
+  yelp-redis:
+    image: redis:latest
+    container_name: yelp-redis
+    ports:
+      - "6378:6379"
+    networks:
+      - yelp
+      
+networks:
+  yelp: 
+    external: true
+
+volumes:
+  postgres_data:

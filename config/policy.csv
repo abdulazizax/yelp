@@ -1,0 +1,13 @@
+
+p, unauthorized, /swagger/*, GET
+p, unauthorized, /v1/auth/*, GET|POST
+
+p, user, /v1/user/*, PUT|DELETE
+p, user, /v1/user/:id, GET
+p, admin, /v1/user/*, GET|POST|PUT|DELETE
+
+p, user, /v1/session/*, GET|DELETE
+p, admin, /v1/session/*, GET|POST|PUT|DELETE
+
+g, user, unauthorized
+g, admin, user
