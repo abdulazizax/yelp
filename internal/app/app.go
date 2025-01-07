@@ -47,7 +47,7 @@ func Run(cfg *config.Config) {
 
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
-	l.Info(fmt.Sprintf("app - Run - httpServer: %s", cfg.HTTP.Port))
+	l.Info("app - Run - httpServer: %s", cfg.HTTP.Port)
 
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)
@@ -55,7 +55,7 @@ func Run(cfg *config.Config) {
 
 	select {
 	case s := <-interrupt:
-		l.Info("app - Run - signal: " + s.String())
+		l.Info("app - Run - signal: %s", s.String())
 	case err = <-httpServer.Notify():
 		l.Error(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
 	}
