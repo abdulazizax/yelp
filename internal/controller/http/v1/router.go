@@ -77,4 +77,13 @@ func NewRouter(engine *gin.Engine, l *logger.Logger, config *config.Config, useC
 		auth.POST("/verify-email", handlerV1.VerifyEmail)
 		auth.POST("/login", handlerV1.Login)
 	}
+
+	business := v1.Group("/business")
+	{
+		business.POST("/", handlerV1.CreateBusiness)
+		business.GET("/list", handlerV1.GetBusinesses)
+		business.GET("/:id", handlerV1.GetBusiness)
+		business.PUT("/", handlerV1.UpdateBusiness)
+		business.DELETE("/:id", handlerV1.DeleteBusiness)
+	}
 }

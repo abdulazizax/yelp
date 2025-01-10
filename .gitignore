@@ -3,6 +3,7 @@
 .vscode
 
 text.txts
+test.sql
 
 # Config
 .env

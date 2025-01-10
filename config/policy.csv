@@ -1,4 +1,3 @@
-
 p, unauthorized, /swagger/*, GET
 p, unauthorized, /v1/auth/*, GET|POST
 
@@ -9,5 +8,9 @@ p, admin, /v1/user/*, GET|POST|PUT|DELETE
 p, user, /v1/session/*, GET|DELETE
 p, admin, /v1/session/*, GET|POST|PUT|DELETE
 
+p, business_owner, /v1/business/*, GET|POST|PUT|DELETE
+p, admin, /v1/business/*, GET|POST|PUT|DELETE
+
 g, user, unauthorized
 g, admin, user
+g, super_admin, admin

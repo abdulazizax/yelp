@@ -29,4 +29,14 @@ type (
 		Delete(ctx context.Context, req entity.Id) error
 		UpdateField(ctx context.Context, req entity.UpdateFieldRequest) (entity.RowsEffected, error)
 	}
+
+	// BusinessRepo
+	BusinessRepoI interface {
+		Create(ctx context.Context, req entity.Business) (entity.Business, error)
+		GetSingle(ctx context.Context, req entity.BusinessSingleRequest) (entity.Business, error)
+		GetList(ctx context.Context, req entity.GetListFilter) (entity.BusinessList, error)
+		Update(ctx context.Context, req entity.Business) (entity.Business, error)
+		Delete(ctx context.Context, req entity.Id) error
+		UpdateField(ctx context.Context, req entity.UpdateFieldRequest) (entity.RowsEffected, error)
+	}
 )
