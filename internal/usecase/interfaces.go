@@ -39,4 +39,22 @@ type (
 		Delete(ctx context.Context, req entity.Id) error
 		UpdateField(ctx context.Context, req entity.UpdateFieldRequest) (entity.RowsEffected, error)
 	}
+
+	// BusinessCategoryRepo
+	BusinessCategoryRepoI interface {
+		Create(ctx context.Context, req entity.BusinessCategory) (entity.BusinessCategory, error)
+		GetSingle(ctx context.Context, req entity.BusinessCategorySingleRequest) (entity.BusinessCategory, error)
+		GetList(ctx context.Context, req entity.GetListFilter) (entity.BusinessCategoryList, error)
+		Update(ctx context.Context, req entity.BusinessCategory) (entity.BusinessCategory, error)
+		Delete(ctx context.Context, req entity.Id) error
+	}
+
+	// BusinessAttachmentRepo
+	BusinessAttachmentRepoI interface {
+		Create(ctx context.Context, req entity.BusinessAttachment) (entity.BusinessAttachment, error)
+		MultipleUpsert(ctx context.Context, req entity.BusinessAttachmentMultipleInsertRequest) ([]entity.BusinessAttachment, error)
+		GetSingle(ctx context.Context, req entity.Id) (entity.BusinessAttachment, error)
+		GetList(ctx context.Context, req entity.GetListFilter) (entity.BusinessAttachmentList, error)
+		Delete(ctx context.Context, req entity.Id) error
+	}
 )

@@ -56,7 +56,7 @@ func (h *Handler) GetSessions(ctx *gin.Context) {
 	limit := ctx.DefaultQuery("limit", "10")
 	userId := ctx.DefaultQuery("user_id", "")
 
-	if ctx.GetHeader("user_type") == "user" {
+	if ctx.GetHeader("user_type") == "user" || ctx.GetHeader("user_type") == "admin" {
 		userId = ctx.GetHeader("sub")
 	}
 

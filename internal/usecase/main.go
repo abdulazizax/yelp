@@ -9,16 +9,20 @@ import (
 
 // UseCase -.
 type UseCase struct {
-	UserRepo    UserRepoI
-	SessionRepo SessionRepoI
-	BusinessRepo BusinessRepoI
+	UserRepo               UserRepoI
+	SessionRepo            SessionRepoI
+	BusinessRepo           BusinessRepoI
+	BusinessCategoryRepo   BusinessCategoryRepoI
+	BusinessAttachmentRepo BusinessAttachmentRepoI
 }
 
 // New -.
 func New(pg *postgres.Postgres, config *config.Config, logger *logger.Logger) *UseCase {
 	return &UseCase{
-		UserRepo:     repo.NewUserRepo(pg, config, logger),
-		SessionRepo:  repo.NewSessionRepo(pg, config, logger),
-		BusinessRepo: repo.NewBusinessRepo(pg, config, logger),
+		UserRepo:               repo.NewUserRepo(pg, config, logger),
+		SessionRepo:            repo.NewSessionRepo(pg, config, logger),
+		BusinessRepo:           repo.NewBusinessRepo(pg, config, logger),
+		BusinessCategoryRepo:   repo.NewBusinessCategoryRepo(pg, config, logger),
+		BusinessAttachmentRepo: repo.NewBusinessAttachmentRepo(pg, config, logger),
 	}
 }

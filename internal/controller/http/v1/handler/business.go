@@ -30,7 +30,17 @@ func (h *Handler) CreateBusiness(ctx *gin.Context) {
 		return
 	}
 
+	body.OwnerID = ctx.GetHeader("sub")
+
 	business, err := h.UseCase.BusinessRepo.Create(ctx, body)
+	if h.HandleDbError(ctx, err, "Error creating business") {
+		return
+	}
+
+	business.Attachments, err = h.UseCase.BusinessAttachmentRepo.MultipleUpsert(ctx, entity.BusinessAttachmentMultipleInsertRequest{
+		BusinessId:  business.ID,
+		Attachments: body.Attachments,
+	})
 	if h.HandleDbError(ctx, err, "Error creating business") {
 		return
 	}
@@ -47,8 +57,6 @@ func (h *Handler) CreateBusiness(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Business ID"
-// @Param owner_id path string true "Owner ID"
-// @Param category_id path string true "Category ID"
 // @Success 200 {object} entity.Business
 // @Failure 400 {object} entity.ErrorResponse
 func (h *Handler) GetBusiness(ctx *gin.Context) {
@@ -57,8 +65,6 @@ func (h *Handler) GetBusiness(ctx *gin.Context) {
 	)
 
 	req.ID = ctx.Param("id")
-	req.OwnerID = ctx.Param("owner_id")
-	req.CategoryID = ctx.Param("category_id")
 
 	business, err := h.UseCase.BusinessRepo.GetSingle(ctx, req)
 	if h.HandleDbError(ctx, err, "Error getting business") {
@@ -145,12 +151,20 @@ func (h *Handler) UpdateBusiness(ctx *gin.Context) {
 		return
 	}
 
-	if ctx.GetHeader("user_role") == "business_owner" {
-		body.ID = ctx.GetHeader("sub")
+	if ctx.GetHeader("user_role") == "business_owner" || ctx.GetHeader("user_type") == "admin" {
+		body.OwnerID = ctx.GetHeader("sub")
 	}
 
 	business, err := h.UseCase.BusinessRepo.Update(ctx, body)
 	if h.HandleDbError(ctx, err, "Error updating business") {
+		return
+	}
+
+	business.Attachments, err = h.UseCase.BusinessAttachmentRepo.MultipleUpsert(ctx, entity.BusinessAttachmentMultipleInsertRequest{
+		BusinessId:  business.ID,
+		Attachments: body.Attachments,
+	})
+	if h.HandleDbError(ctx, err, "Error upserting business attachments") {
 		return
 	}
 
@@ -175,7 +189,7 @@ func (h *Handler) DeleteBusiness(ctx *gin.Context) {
 
 	req.ID = ctx.Param("id")
 
-	if ctx.GetHeader("user_role") == "business_owner" {
+	if ctx.GetHeader("user_role") == "business_owner" || ctx.GetHeader("user_type") == "admin" {
 		req.ID = ctx.GetHeader("sub")
 	}
 

@@ -11,6 +11,10 @@ p, admin, /v1/session/*, GET|POST|PUT|DELETE
 p, business_owner, /v1/business/*, GET|POST|PUT|DELETE
 p, admin, /v1/business/*, GET|POST|PUT|DELETE
 
+p, user, /v1/business-category/*, GET
+p, business_owner, /v1/business-category/*, GET
+p, super_admin, /v1/business-category/*, GET|POST|PUT|DELETE
+
 g, user, unauthorized
 g, admin, user
 g, super_admin, admin

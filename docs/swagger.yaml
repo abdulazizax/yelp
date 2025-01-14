@@ -1,10 +1,109 @@
 basePath: /v1
 definitions:
+  entity.Business:
+    properties:
+      address:
+        type: string
+      attachments:
+        items:
+          $ref: '#/definitions/entity.BusinessAttachment'
+        type: array
+      category_id:
+        type: string
+      contact_info:
+        $ref: '#/definitions/entity.ContactInfo'
+      created_at:
+        type: string
+      description:
+        type: string
+      hours_of_operation:
+        $ref: '#/definitions/entity.HoursOfOperation'
+      id:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      owner_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.BusinessAttachment:
+    properties:
+      content_type:
+        type: string
+      created_at:
+        type: string
+      filepath:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.BusinessCategory:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.BusinessCategoryList:
+    properties:
+      businesses_categories:
+        items:
+          $ref: '#/definitions/entity.BusinessCategory'
+        type: array
+      count:
+        type: integer
+    type: object
+  entity.BusinessList:
+    properties:
+      businesses:
+        items:
+          $ref: '#/definitions/entity.Business'
+        type: array
+      count:
+        type: integer
+    type: object
+  entity.ContactInfo:
+    properties:
+      email:
+        type: string
+      phone:
+        type: string
+      website:
+        type: string
+    type: object
   entity.ErrorResponse:
     properties:
       code:
         type: string
       message:
+        type: string
+    type: object
+  entity.HoursOfOperation:
+    properties:
+      friday:
+        type: string
+      monday:
+        type: string
+      saturday:
+        type: string
+      sunday:
+        type: string
+      thursday:
+        type: string
+      tuesday:
+        type: string
+      wednesday:
         type: string
     type: object
   entity.LoginRequest:
@@ -223,6 +322,299 @@ paths:
       summary: Register
       tags:
       - auth
+  /business:
+    post:
+      consumes:
+      - application/json
+      description: Create a new business
+      parameters:
+      - description: Business object
+        in: body
+        name: business
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Business'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Business'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new business
+      tags:
+      - business
+    put:
+      consumes:
+      - application/json
+      description: Update a business
+      parameters:
+      - description: Business object
+        in: body
+        name: business
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Business'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Business'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a business
+      tags:
+      - business
+  /business-category:
+    post:
+      consumes:
+      - application/json
+      description: Create a new business-category
+      parameters:
+      - description: BusinessCategory object
+        in: body
+        name: business-category
+        required: true
+        schema:
+          $ref: '#/definitions/entity.BusinessCategory'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.BusinessCategory'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new business-category
+      tags:
+      - business-category
+    put:
+      consumes:
+      - application/json
+      description: Update a business-category
+      parameters:
+      - description: BusinessCategory object
+        in: body
+        name: business-category
+        required: true
+        schema:
+          $ref: '#/definitions/entity.BusinessCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.BusinessCategory'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a business-category
+      tags:
+      - business-category
+  /business-category/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a business-category
+      parameters:
+      - description: BusinessCategory ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a business-category
+      tags:
+      - business-category
+    get:
+      consumes:
+      - application/json
+      description: Get a business-category by ID
+      parameters:
+      - description: BusinessCategory ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Category ID
+        in: path
+        name: category_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.BusinessCategory'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a business-category by ID
+      tags:
+      - business-category
+  /business-category/list:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of users
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: number
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: number
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.BusinessCategoryList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a list of users
+      tags:
+      - business-category
+  /business/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a business
+      parameters:
+      - description: Business ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a business
+      tags:
+      - business
+    get:
+      consumes:
+      - application/json
+      description: Get a business by ID
+      parameters:
+      - description: Business ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Business'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a business by ID
+      tags:
+      - business
+  /business/list:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of users
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: number
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: number
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.BusinessList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a list of users
+      tags:
+      - business
   /session:
     put:
       consumes:

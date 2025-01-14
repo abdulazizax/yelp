@@ -6,7 +6,7 @@ CREATE TYPE user_status AS ENUM ('active', 'blocked', 'inverify');
 CREATE TYPE platform AS ENUM ('web', 'mobile', 'admin_web');
 
 -- Tables
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY,
     user_type user_type NOT NULL,
     user_role user_role NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE users (
     updated_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
-CREATE TABLE session (
+CREATE TABLE IF NOT EXISTS session (
   id uuid PRIMARY KEY,
   user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   user_agent text NOT NULL,

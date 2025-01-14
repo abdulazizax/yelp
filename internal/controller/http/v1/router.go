@@ -78,6 +78,7 @@ func NewRouter(engine *gin.Engine, l *logger.Logger, config *config.Config, useC
 		auth.POST("/login", handlerV1.Login)
 	}
 
+	// Business
 	business := v1.Group("/business")
 	{
 		business.POST("/", handlerV1.CreateBusiness)
@@ -85,5 +86,15 @@ func NewRouter(engine *gin.Engine, l *logger.Logger, config *config.Config, useC
 		business.GET("/:id", handlerV1.GetBusiness)
 		business.PUT("/", handlerV1.UpdateBusiness)
 		business.DELETE("/:id", handlerV1.DeleteBusiness)
+	}
+
+	// Business Category
+	businessCategory := v1.Group("/business-category")
+	{
+		businessCategory.POST("/", handlerV1.CreateBusinessCategory)
+		businessCategory.GET("/list", handlerV1.GetBusinessCategories)
+		businessCategory.GET("/:id", handlerV1.GetBusinessCategory)
+		businessCategory.PUT("/", handlerV1.UpdateBusinessCategory)
+		businessCategory.DELETE("/:id", handlerV1.DeleteBusinessCategory)
 	}
 }
