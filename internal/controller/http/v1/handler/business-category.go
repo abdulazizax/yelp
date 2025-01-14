@@ -30,6 +30,11 @@ func (h *Handler) CreateBusinessCategory(ctx *gin.Context) {
 		return
 	}
 
+	if ctx.GetHeader("user_type") != "admin" {
+		h.ReturnError(ctx, config.ErrorForbidden, "Access denied, only admin can create business-category", 403)
+		return
+	}
+
 	businessCategory, err := h.UseCase.BusinessCategoryRepo.Create(ctx, body)
 	if h.HandleDbError(ctx, err, "Error creating business-category") {
 		return
@@ -133,8 +138,9 @@ func (h *Handler) UpdateBusinessCategory(ctx *gin.Context) {
 		return
 	}
 
-	if ctx.GetHeader("user_role") == "super_admin" {
-		body.ID = ctx.GetHeader("sub")
+	if ctx.GetHeader("user_type") != "admin" {
+		h.ReturnError(ctx, config.ErrorForbidden, "Access denied, only admin can update business-category", 403)
+		return
 	}
 
 	businessCategory, err := h.UseCase.BusinessCategoryRepo.Update(ctx, body)
@@ -163,8 +169,9 @@ func (h *Handler) DeleteBusinessCategory(ctx *gin.Context) {
 
 	req.ID = ctx.Param("id")
 
-	if ctx.GetHeader("user_role") == "super_admin" {
-		req.ID = ctx.GetHeader("sub")
+	if ctx.GetHeader("user_type") != "admin" {
+		h.ReturnError(ctx, config.ErrorForbidden, "Access denied, only admin can delete business-category", 403)
+		return
 	}
 
 	err := h.UseCase.BusinessCategoryRepo.Delete(ctx, req)

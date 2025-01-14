@@ -147,7 +147,7 @@ func (h *Handler) UpdateReview(ctx *gin.Context) {
 		return
 	}
 
-	if body.UserID != ctx.GetHeader("sub") {
+	if body.UserID != ctx.GetHeader("sub") || ctx.GetHeader("user_type") != "admin" {
 		h.ReturnError(ctx, config.ErrorForbidden, "You have no access to the comment", http.StatusForbidden)
 		return
 	}
@@ -191,7 +191,7 @@ func (h *Handler) DeleteReview(ctx *gin.Context) {
 		return
 	}
 
-	if body.UserID != ctx.GetHeader("sub") {
+	if body.UserID != ctx.GetHeader("sub") || ctx.GetHeader("user_type") != "admin" {
 		h.ReturnError(ctx, config.ErrorForbidden, "You have no access to the comment", http.StatusForbidden)
 		return
 	}

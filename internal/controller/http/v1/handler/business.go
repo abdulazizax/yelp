@@ -151,8 +151,9 @@ func (h *Handler) UpdateBusiness(ctx *gin.Context) {
 		return
 	}
 
-	if ctx.GetHeader("user_role") == "business_owner" || ctx.GetHeader("user_type") == "admin" {
-		body.OwnerID = ctx.GetHeader("sub")
+	if ctx.GetHeader("sub") != body.OwnerID || ctx.GetHeader("user_type") != "admin" {
+		h.ReturnError(ctx, config.ErrorForbidden, "Access denied, only owner or admin can update business", 403)
+		return
 	}
 
 	business, err := h.UseCase.BusinessRepo.Update(ctx, body)
@@ -189,11 +190,18 @@ func (h *Handler) DeleteBusiness(ctx *gin.Context) {
 
 	req.ID = ctx.Param("id")
 
-	if ctx.GetHeader("user_role") == "business_owner" || ctx.GetHeader("user_type") == "admin" {
-		req.ID = ctx.GetHeader("sub")
+	res, err := h.UseCase.BusinessRepo.GetSingle(ctx, entity.BusinessSingleRequest{ID: req.ID})
+	if err != nil {
+		h.ReturnError(ctx, config.ErrorNotFound, "Business not found", 404)
+		return
 	}
 
-	err := h.UseCase.BusinessRepo.Delete(ctx, req)
+	if res.OwnerID != ctx.GetHeader("sub") && ctx.GetHeader("user_type") != "admin" {
+		h.ReturnError(ctx, config.ErrorForbidden, "Access denied, only owner or admin can delete business", 403)
+		return
+	}
+
+	err = h.UseCase.BusinessRepo.Delete(ctx, req)
 	if h.HandleDbError(ctx, err, "Error deleting business") {
 		return
 	}
