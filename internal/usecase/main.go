@@ -14,6 +14,8 @@ type UseCase struct {
 	BusinessRepo           BusinessRepoI
 	BusinessCategoryRepo   BusinessCategoryRepoI
 	BusinessAttachmentRepo BusinessAttachmentRepoI
+	ReviewRepo             ReviewRepoI
+	ReviewAttachmentRepo   ReviewAttachmentRepoI
 }
 
 // New -.
@@ -24,5 +26,7 @@ func New(pg *postgres.Postgres, config *config.Config, logger *logger.Logger) *U
 		BusinessRepo:           repo.NewBusinessRepo(pg, config, logger),
 		BusinessCategoryRepo:   repo.NewBusinessCategoryRepo(pg, config, logger),
 		BusinessAttachmentRepo: repo.NewBusinessAttachmentRepo(pg, config, logger),
+		ReviewRepo:             repo.NewReviewRepo(pg, config, logger),
+		ReviewAttachmentRepo:   repo.NewReviewAttachmentRepo(pg, config, logger),
 	}
 }

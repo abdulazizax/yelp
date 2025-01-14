@@ -80,6 +80,6 @@ type BusinessAttachmentList struct {
 }
 
 type BusinessAttachmentMultipleInsertRequest struct {
-	BusinessId  string               `json:"tweet_id"`
+	BusinessId  string               `json:"business_id"`
 	Attachments []BusinessAttachment `json:"attachments"`
 }

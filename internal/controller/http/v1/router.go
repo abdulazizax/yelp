@@ -97,4 +97,14 @@ func NewRouter(engine *gin.Engine, l *logger.Logger, config *config.Config, useC
 		businessCategory.PUT("/", handlerV1.UpdateBusinessCategory)
 		businessCategory.DELETE("/:id", handlerV1.DeleteBusinessCategory)
 	}
+
+	// Business Review
+	review := v1.Group("/review")
+	{
+		review.POST("/", handlerV1.CreateReview)
+		review.GET("/list", handlerV1.GetReviews)
+		review.GET("/:id", handlerV1.GetReview)
+		review.PUT("/", handlerV1.UpdateReview)
+		review.DELETE("/:id", handlerV1.DeleteReview)
+	}
 }

@@ -57,4 +57,22 @@ type (
 		GetList(ctx context.Context, req entity.GetListFilter) (entity.BusinessAttachmentList, error)
 		Delete(ctx context.Context, req entity.Id) error
 	}
+
+	// ReviewRepo
+	ReviewRepoI interface {
+		Create(ctx context.Context, req entity.Review) (entity.Review, error)
+		GetSingle(ctx context.Context, req entity.Id) (entity.Review, error)
+		GetList(ctx context.Context, req entity.GetListFilter) (entity.ReviewList, error)
+		Update(ctx context.Context, req entity.Review) (entity.Review, error)
+		Delete(ctx context.Context, req entity.Id) error
+	}
+
+	// ReviewAttachmentRepo
+	ReviewAttachmentRepoI interface {
+		Create(ctx context.Context, req entity.ReviewAttachment) (entity.ReviewAttachment, error)
+		MultipleUpsert(ctx context.Context, req entity.ReviewAttachmentMultipleInsertRequest) ([]entity.ReviewAttachment, error)
+		GetSingle(ctx context.Context, req entity.Id) (entity.ReviewAttachment, error)
+		GetList(ctx context.Context, req entity.GetListFilter) (entity.ReviewAttachmentList, error)
+		Delete(ctx context.Context, req entity.Id) error
+	}
 )

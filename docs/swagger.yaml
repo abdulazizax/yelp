@@ -130,6 +130,49 @@ definitions:
       username:
         type: string
     type: object
+  entity.Review:
+    properties:
+      attachments:
+        items:
+          $ref: '#/definitions/entity.ReviewAttachment'
+        type: array
+      business_id:
+        type: string
+      comment:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      rating:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entity.ReviewAttachment:
+    properties:
+      content_type:
+        type: string
+      created_at:
+        type: string
+      filepath:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.ReviewList:
+    properties:
+      count:
+        type: integer
+      reviewes:
+        items:
+          $ref: '#/definitions/entity.Review'
+        type: array
+    type: object
   entity.Session:
     properties:
       created_at:
@@ -615,6 +658,150 @@ paths:
       summary: Get a list of users
       tags:
       - business
+  /review:
+    post:
+      consumes:
+      - application/json
+      description: Create a new review
+      parameters:
+      - description: Review object
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Review'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Review'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new review
+      tags:
+      - review
+    put:
+      consumes:
+      - application/json
+      description: Update a review
+      parameters:
+      - description: Review object
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Review'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Review'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a review
+      tags:
+      - review
+  /review/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a review
+      parameters:
+      - description: Review ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a review
+      tags:
+      - review
+    get:
+      consumes:
+      - application/json
+      description: Get a review by ID
+      parameters:
+      - description: Review ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Review'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a review by ID
+      tags:
+      - review
+  /review/list:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of users
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: number
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: number
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ReviewList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a list of users
+      tags:
+      - review
   /session:
     put:
       consumes:
